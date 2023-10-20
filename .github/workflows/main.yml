@@ -33,7 +33,7 @@ jobs:
           fng_data = data["data"]
           json_data = json.dumps(fng_data)
 
-          with open("data-now", "w") as file:
+          with open("data-now.json", "w") as file:
               file.write(json_data)
 
       - name: Commit and push changes
