@@ -1,0 +1,45 @@
+yaml
+name: Fetch-Fear-And-Greed-Index
+
+on:
+  schedule:
+    - cron: "0 0 5 * *"
+
+jobs:
+  fetch_data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Fetch Fear and Greed Index data
+        run: |
+          import requests
+          import json
+
+          url = "https://api.alternative.me/fng/"
+          response = requests.get(url)
+          data = response.json()
+
+          fng_data = data["data"]
+          json_data = json.dumps(fng_data)
+
+          with open("data-now", "w") as file:
+              file.write(json_data)
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add path/to/fng_data.json
+          git commit -m "Update Fear and Greed Index data"
+          git push
